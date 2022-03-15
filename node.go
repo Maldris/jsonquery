@@ -102,22 +102,33 @@ func (n *Node) SelectElement(query string) *Node {
 	return FindOne(n, query)
 }
 
+// SelectElements like QueryAll finds all child elements matching
+// the specified query. However, it will panic if the query cannot
+// be parsed.
 func (n *Node) SelectElements(query string) []*Node {
 	return Find(n, query)
 }
 
+// Queryfinds the first of child elements 
+// matching the specified query.
 func (n *Node) Query(query string) (*Node, error) {
 	return Query(n, query)
 }
 
+// QueryAllfinds all child elements matching
+// the specified query.
 func (n *Node) QueryAll(query string) ([]*Node, error) {
 	return QueryAll(n, query)
 }
 
+// QuerySelector returns the first matched child Node by the
+// specified XPath selector.
 func (n *Node) QuerySelector(selector *xpath.Expr) *Node {
 	return QuerySelector(n, selector)
 }
 
+// QuerySelectorAll searches all of the Node that matches the
+// specified XPath selectors.
 func (n *Node) QuerySelectorAll(selector *xpath.Expr) []*Node {
 	return QuerySelectorAll(n, selector)
 }
