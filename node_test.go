@@ -6,6 +6,18 @@ import (
 	"testing"
 )
 
+const (
+	testJSON = `{
+		"name":"John",
+		"age":30,
+		"cars": [
+			{ "name":"Ford", "models":[ "Fiesta", "Focus", "Mustang" ] },
+			{ "name":"BMW", "models":[ "320", "X3", "X5" ] },
+			{ "name":"Fiat", "models":[ "500", "Panda" ] }
+		]
+	}`
+)
+
 func parseString(s string) (*Node, error) {
 	return Parse(strings.NewReader(s))
 }
@@ -133,16 +145,7 @@ func TestParseJsonObjectArray(t *testing.T) {
 }
 
 func TestParseJson(t *testing.T) {
-	s := `{
-		"name":"John",
-		"age":30,
-		"cars": [
-			{ "name":"Ford", "models":[ "Fiesta", "Focus", "Mustang" ] },
-			{ "name":"BMW", "models":[ "320", "X3", "X5" ] },
-			{ "name":"Fiat", "models":[ "500", "Panda" ] }
-		]
-	 }`
-	doc, err := parseString(s)
+	doc, err := parseString(testJSON)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -173,5 +176,152 @@ func TestLargeFloat(t *testing.T) {
 	n := doc.SelectElement("large_number")
 	if n.InnerText() != "365823929453" {
 		t.Fatalf("expected %v but %v", "365823929453", n.InnerText())
+	}
+}
+
+func TestNodeSelectElement(t *testing.T) {
+	top, err := parseString(testJSON)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	n := top.SelectElement("age")
+	if n == nil {
+		t.Fatal("n is nil")
+	}
+
+	if n.InnerText() != "30" {
+		t.Fatalf("expected %v, but %v", "30", n.InnerText())
+	}
+}
+
+func TestNodeSelectElements(t *testing.T) {
+	top, err := parseString(testJSON)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ns := top.SelectElements("//name")
+	if ns == nil {
+		t.Fatal("n is nil")
+	}
+
+	if len(ns) != 4 {
+		t.Fatalf("len(ns)!=4, got %v", len(ns))
+	}
+
+	ns = top.SelectElements("/cars//name")
+	if ns == nil {
+		t.Fatal("n is nil")
+	}
+
+	if len(ns) != 3 {
+		t.Fatalf("len(ns)!=3, got %v", len(ns))
+	}
+}
+
+func TestNodeQuery(t *testing.T) {
+	top, err := parseString(testJSON)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	n, err := top.Query("age")
+	if err != nil {
+		t.Fatal("error executing query: ", err)
+	}
+	if n == nil {
+		t.Fatal("n is nil")
+	}
+
+	if n.InnerText() != "30" {
+		t.Fatalf("expected %v, but %v", "30", n.InnerText())
+	}
+}
+
+func TestNodeQueryAll(t *testing.T) {
+	top, err := parseString(testJSON)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ns, err := top.QueryAll("//name")
+	if err != nil {
+		t.Fatal("Error executing query: ", err)
+	}
+	if ns == nil {
+		t.Fatal("n is nil")
+	}
+
+	if len(ns) != 4 {
+		t.Fatalf("len(ns)!=4, got %v", len(ns))
+	}
+
+	ns, err = top.QueryAll("/cars//name")
+	if err != nil {
+		t.Fatal("Error executing query: ", err)
+	}
+	if ns == nil {
+		t.Fatal("n is nil")
+	}
+
+	if len(ns) != 3 {
+		t.Fatalf("len(ns)!=3, got %v", len(ns))
+	}
+}
+
+func TestNodeQuerySelector(t *testing.T) {
+	top, err := parseString(testJSON)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	qa, err := getQuery("age")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	n := top.QuerySelector(qa)
+	if n == nil {
+		t.Fatal("n is nil")
+	}
+
+	if n.InnerText() != "30" {
+		t.Fatalf("expected %v, but %v", "30", n.InnerText())
+	}
+}
+
+func TestNodeQuerySelectorAll(t *testing.T) {
+	top, err := parseString(testJSON)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	qa, err := getQuery("//name")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ns := top.QuerySelectorAll(qa)
+	if ns == nil {
+		t.Fatal("n is nil")
+	}
+
+	if len(ns) != 4 {
+		t.Fatalf("len(ns)!=4, got %v", len(ns))
+	}
+
+	qa, err = getQuery("/cars//name")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ns = top.QuerySelectorAll(qa)
+	if ns == nil {
+		t.Fatal("n is nil")
+	}
+
+	if len(ns) != 3 {
+		t.Fatalf("len(ns)!=3, got %v", len(ns))
 	}
 }
