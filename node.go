@@ -95,8 +95,9 @@ func (n *Node) OutputXML() string {
 	return buf.String()
 }
 
-// SelectElement finds the first of child elements with the
-// specified name.
+// SelectElement like Query finds the first of child elements 
+// matching the specified query. However, it will panic if the
+// query cannot be parsed.
 func (n *Node) SelectElement(query string) *Node {
 	return FindOne(n, query)
 }
