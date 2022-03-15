@@ -61,7 +61,7 @@ func QuerySelectorAll(top *Node, selector *xpath.Expr) []*Node {
 	return elems
 }
 
-// QuerySelector returns the first matched XML Node by the specified XPath selector.
+// QuerySelector returns the first matched JSON Node by the specified XPath selector.
 func QuerySelector(top *Node, selector *xpath.Expr) *Node {
 	t := selector.Select(CreateXPathNavigator(top))
 	if t.MoveNext() {
