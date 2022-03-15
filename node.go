@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
+
+	"github.com/antchfx/xpath"
 )
 
 // A NodeType is the type of a Node.
@@ -97,6 +99,26 @@ func (n *Node) OutputXML() string {
 // specified name.
 func (n *Node) SelectElement(query string) *Node {
 	return FindOne(n, query)
+}
+
+func (n *Node) SelectElements(query string) []*Node {
+	return Find(n, query)
+}
+
+func (n *Node) Query(query string) (*Node, error) {
+	return Query(n, query)
+}
+
+func (n *Node) QueryAll(query string) ([]*Node, error) {
+	return QueryAll(n, query)
+}
+
+func (n *Node) QuerySelector(selector *xpath.Expr) *Node {
+	return QuerySelector(n, selector)
+}
+
+func (n *Node) QuerySelectorAll(selector *xpath.Expr) []*Node {
+	return QuerySelectorAll(n, selector)
 }
 
 // LoadURL loads the JSON document from the specified URL.
