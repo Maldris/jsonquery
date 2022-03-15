@@ -95,13 +95,8 @@ func (n *Node) OutputXML() string {
 
 // SelectElement finds the first of child elements with the
 // specified name.
-func (n *Node) SelectElement(name string) *Node {
-	for nn := n.FirstChild; nn != nil; nn = nn.NextSibling {
-		if nn.Data == name {
-			return nn
-		}
-	}
-	return nil
+func (n *Node) SelectElement(query string) *Node {
+	return FindOne(n, query)
 }
 
 // LoadURL loads the JSON document from the specified URL.
