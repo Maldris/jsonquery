@@ -1,6 +1,8 @@
 package jsonquery
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"sort"
 	"strings"
 	"testing"
@@ -351,3 +353,21 @@ func TestOutputXML(t *testing.T) {
 	}
 }
 
+func TestLoadURLSuccess(t *testing.T) {
+	contentTypes := []string{
+		"application/json",
+		"application/geo+json",
+	}
+
+	for _, contentType := range contentTypes {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", contentType)
+			w.Write([]byte(testJSON))
+		}))
+		defer server.Close()
+		_, err := LoadURL(server.URL)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
