@@ -155,7 +155,7 @@ func TestParseJson(t *testing.T) {
 		t.Fatal("n is nil")
 	}
 	if n.NextSibling != nil {
-		t.Fatal("next sibling shoud be nil")
+		t.Fatal("next sibling should be nil")
 	}
 	if e, g := "John", n.InnerText(); e != g {
 		t.Fatalf("expected %v but %v", e, g)
@@ -169,7 +169,7 @@ func TestParseJson(t *testing.T) {
 func TestLargeFloat(t *testing.T) {
 	s := `{
 		"large_number": 365823929453
-	 }`
+	}`
 	doc, err := parseString(s)
 	if err != nil {
 		t.Fatal(err)
