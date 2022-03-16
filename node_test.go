@@ -326,3 +326,28 @@ func TestNodeQuerySelectorAll(t *testing.T) {
 		t.Fatalf("len(ns)!=3, got %v", len(ns))
 	}
 }
+
+func TestOutputXML(t *testing.T) {
+	top, err := parseString(testJSON)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	xmlContent := top.OutputXML()
+	if len(xmlContent) < 21 { // xml version header length
+		t.Fatal("xml output less than min length")
+	}
+	if !strings.Contains(xmlContent, `<?xml version="1.0"?>`) {
+		t.Fatal("xml output missing version header")
+	}
+	if !strings.Contains(xmlContent, `<name>John</name>`) {
+		t.Fatal("xml output missing expected content")
+	}
+	if !strings.Contains(xmlContent, `<age>30</age>`) {
+		t.Fatal("xml output missing expected content")
+	}
+	if !strings.Contains(xmlContent, `<element>Fiesta</element>`) {
+		t.Fatal("xml output missing expected content")
+	}
+}
+
